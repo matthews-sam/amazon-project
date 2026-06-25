@@ -1,103 +1,73 @@
+/**
+ * checkout-header.css — Step 3
+ */
+
 .checkout-header {
-  height: 60px;
-  padding-left: 30px;
-  padding-right: 30px;
-  background-color: white;
+  height: var(--header-height);
+  padding-inline: var(--space-8);
+  background-color: var(--color-bg-card);
+  border-bottom: 1px solid var(--color-border-light);
+  box-shadow: var(--shadow-xs);
 
   display: flex;
   justify-content: center;
 
   position: fixed;
   top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
+  inset-inline: 0;
+  z-index: 100;
 }
 
 .header-content {
   width: 100%;
-  max-width: 1100px;
-
+  max-width: var(--max-width-content);
   display: flex;
   align-items: center;
 }
 
-.checkout-header-left-section {
-  width: 150px;
-}
+/* ─── Logo ───────────────────────────────────────────────────────────────── */
 
-.amazon-logo {
-  width: 100px;
-  margin-top: 12px;
-}
+.checkout-header-left-section { width: 160px; }
+.amazon-logo { width: 100px; margin-top: 12px; }
+.amazon-mobile-logo { display: none; }
 
-.amazon-mobile-logo {
-  display: none;
-}
-
-/* @media is used to create responsive design (making the
-   website look good on any screen size). This @media
-   means when the screen width is 575px or less, different
-   styles (inside the {...}) will be applied. */
-@media (max-width: 575px) {
-  .checkout-header-left-section {
-    width: auto;
-  }
-
-  .amazon-logo {
-    display: none;
-  }
-
-  .amazon-mobile-logo {
-    display: inline-block;
-    height: 35px;
-    margin-top: 5px;
-  }
-}
+/* ─── Title ──────────────────────────────────────────────────────────────── */
 
 .checkout-header-middle-section {
   flex: 1;
-  flex-shrink: 0;
-  text-align: center;
-
-  font-size: 25px;
-  font-weight: 500;
-
+  font-size: 24px;
+  font-weight: 300;
+  color: var(--color-text);
   display: flex;
   justify-content: center;
+  align-items: baseline;
+  gap: 6px;
 }
 
 .return-to-home-link {
-  color: rgb(0, 113, 133);
-  font-size: 23px;
+  color: var(--color-text-link);
+  font-size: 20px;
+  font-weight: 400;
   text-decoration: none;
-  cursor: pointer;
+  transition: color var(--transition-fast);
 }
+.return-to-home-link:hover { color: var(--color-text-link-hover); text-decoration: underline; }
 
-@media (max-width: 1000px) {
-  .checkout-header-middle-section {
-    font-size: 20px;
-    margin-right: 60px;
-  }
+/* ─── Lock icon ──────────────────────────────────────────────────────────── */
 
-  .return-to-home-link {
-    font-size: 18px;
-  }
+.checkout-header-right-section { width: 160px; text-align: right; }
+
+/* ─── Responsive ─────────────────────────────────────────────────────────── */
+
+@media (max-width: 800px) {
+  .checkout-header-left-section,
+  .checkout-header-right-section { width: auto; }
+  .checkout-header-middle-section { font-size: 18px; }
+  .return-to-home-link { font-size: 16px; }
 }
 
 @media (max-width: 575px) {
-  .checkout-header-middle-section {
-    margin-right: 5px;
-  }
-}
-
-.checkout-header-right-section {
-  text-align: right;
-  width: 150px;
-}
-
-@media (max-width: 1000px) {
-  .checkout-header-right-section {
-    width: auto;
-  }
+  .amazon-logo { display: none; }
+  .amazon-mobile-logo { display: inline-block; height: 32px; margin-top: 5px; }
+  .checkout-header-right-section { display: none; }
 }

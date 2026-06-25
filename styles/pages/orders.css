@@ -1,220 +1,250 @@
-.main {
-  max-width: 850px;
-  margin-top: 90px;
-  margin-bottom: 100px;
-  padding-left: 20px;
-  padding-right: 20px;
+/**
+ * orders.css — Step 3: redesigned orders history page
+ */
 
-  /* margin-left: auto;
-     margin-right auto;
-     Is a trick for centering an element horizontally
-     without needing a container. */
-  margin-left: auto;
-  margin-right: auto;
+/* ─── Page ───────────────────────────────────────────────────────────────── */
+
+.main {
+  max-width: var(--max-width-narrow);
+  padding-inline: var(--space-5);
+  padding-top: calc(var(--header-height) + var(--space-8));
+  padding-bottom: var(--space-12);
+  margin-inline: auto;
 }
 
 .page-title {
+  font-size: var(--font-size-2xl);
   font-weight: 700;
-  font-size: 26px;
-  margin-bottom: 25px;
+  margin-bottom: var(--space-6);
 }
+
+/* ─── Order list ─────────────────────────────────────────────────────────── */
 
 .orders-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  row-gap: 50px;
+  row-gap: var(--space-6);
 }
 
+/* ─── Order card ─────────────────────────────────────────────────────────── */
+
+.order-container {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-xs);
+  animation: fadeInUp var(--transition-slow) both;
+  transition: box-shadow var(--transition-base);
+}
+
+.order-container:hover { box-shadow: var(--shadow-md); }
+
+/* ─── Order header band ──────────────────────────────────────────────────── */
+
 .order-header {
-  background-color: rgb(240, 242, 242);
-  border: 1px solid rgb(213, 217, 217);
-
+  background-color: var(--color-bg-muted);
+  border-bottom: 1px solid var(--color-border-light);
+  padding: var(--space-4) var(--space-6);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-
-  padding: 20px 25px;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
+  gap: var(--space-6);
 }
 
 .order-header-left-section {
   display: flex;
+  gap: var(--space-8);
   flex-shrink: 0;
 }
 
 .order-header-label {
-  font-weight: 500;
-}
-
-.order-date,
-.order-total {
-  margin-right: 45px;
-}
-
-.order-header-right-section {
-  flex-shrink: 1;
-}
-
-@media (max-width: 575px) {
-  .order-header {
-    flex-direction: column;
-    align-items: start;
-    line-height: 23px;
-    padding: 15px;
-  }
-
-  .order-header-left-section {
-    flex-direction: column;
-  }
-
-  .order-header-label {
-    margin-right: 5px;
-  }
-
-  .order-date,
-  .order-total {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    margin-right: 0;
-  }
-
-  .order-header-right-section {
-    display: grid;
-    grid-template-columns: auto 1fr;
-  }
-}
-
-.order-details-grid {
-  padding: 40px 25px;
-  border: 1px solid rgb(213, 217, 217);
-  border-top: none;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
-
-  display: grid;
-  grid-template-columns: 110px 1fr 220px;
-  column-gap: 35px;
-  row-gap: 60px;
-  align-items: center;
-}
-
-@media (max-width: 800px) {
-  .order-details-grid {
-    grid-template-columns: 110px 1fr;
-    row-gap: 0;
-    padding-bottom: 8px;
-  }
-}
-
-@media (max-width: 450px) {
-  .order-details-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.product-image-container {
-  text-align: center;
-}
-
-.product-image-container img {
-  max-width: 110px;
-  max-height: 110px;
-}
-
-.product-name {
-  font-weight: 700;
-  margin-bottom: 5px;
-}
-
-.product-delivery-date {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   margin-bottom: 3px;
 }
 
-.product-quantity {
-  margin-bottom: 8px;
+.order-header-property {
+  font-size: var(--font-size-base);
+  font-weight: 500;
 }
 
-.buy-again-button {
-  font-size: 15px;
-  width: 140px;
-  height: 36px;
-  border-radius: 8px;
+.order-header-right-section {
+  text-align: right;
+  flex-shrink: 1;
+  min-width: 0;
+}
 
+.order-header-property {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 260px;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+/* Status badge */
+.order-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: var(--space-2);
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.order-status::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  display: inline-block;
+}
+
+.order-status--delivered {
+  background-color: #EAF7EE;
+  color: var(--color-text-delivery);
+  border: 1px solid #C3E6CB;
+}
+
+.order-status--shipped {
+  background-color: #E8F4FD;
+  color: var(--color-text-link);
+  border: 1px solid #BEE3F8;
+}
+
+.order-status--processing {
+  background-color: #FFF8E6;
+  color: #856404;
+  border: 1px solid #FFE69C;
+}
+
+/* ─── Order body ─────────────────────────────────────────────────────────── */
+
+.order-details-grid {
+  padding: var(--space-6);
+  display: grid;
+  grid-template-columns: 110px 1fr 200px;
+  column-gap: var(--space-6);
+  row-gap: var(--space-8);
+  align-items: start;
+}
+
+/* ─── Product image ──────────────────────────────────────────────────────── */
+
+.product-image-container {
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: var(--color-bg-muted);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2);
+  aspect-ratio: 1;
+  overflow: hidden;
 }
 
-.buy-again-icon {
-  width: 25px;
-  margin-right: 15px;
+.product-image-container img {
+  max-width: 100px;
+  max-height: 100px;
+  object-fit: contain;
+  transition: transform var(--transition-base);
 }
+
+.product-image-container:hover img { transform: scale(1.05); }
+
+/* ─── Product details ────────────────────────────────────────────────────── */
+
+.product-name {
+  font-weight: 700;
+  font-size: var(--font-size-md);
+  color: var(--color-text-link);
+  margin-bottom: var(--space-1);
+  line-height: var(--line-height-tight);
+}
+
+.product-delivery-date {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-delivery);
+  margin-bottom: var(--space-1);
+  font-weight: 500;
+}
+
+.product-quantity {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-4);
+}
+
+/* ─── Action buttons ─────────────────────────────────────────────────────── */
 
 .product-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
   align-self: start;
 }
 
+.buy-again-button,
 .track-package-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
   width: 100%;
-  font-size: 15px;
-  padding: 8px;
+  height: 36px;
+  font-size: var(--font-size-sm);
+  border-radius: var(--radius-md);
+  white-space: nowrap;
 }
+
+.buy-again-icon { width: 20px; }
+
+/* ─── Responsive ─────────────────────────────────────────────────────────── */
 
 @media (max-width: 800px) {
-  .buy-again-button {
-    margin-bottom: 10px;
+  .order-details-grid {
+    grid-template-columns: 90px 1fr;
+    row-gap: 0;
   }
 
   .product-actions {
-    /* grid-column: 2 means this element will be placed
-       in column 2 in the grid. (Normally, the column that
-       an element is placed in is determined by the order
-       of the elements in the HTML. grid-column overrides
-       this default ordering). */
     grid-column: 2;
-    margin-bottom: 30px;
+    flex-direction: row;
+    margin-bottom: var(--space-6);
   }
 
-  .track-package-button {
-    width: 140px;
-  }
+  .buy-again-button,
+  .track-package-button { width: 140px; }
 }
 
-@media (max-width: 450px) {
+@media (max-width: 575px) {
+  .order-header { flex-direction: column; gap: var(--space-3); }
+  .order-header-left-section { flex-direction: column; gap: var(--space-3); }
+  .order-header-right-section { text-align: left; }
+
+  .order-details-grid {
+    grid-template-columns: 1fr;
+    padding: var(--space-4);
+  }
+
   .product-image-container {
-    text-align: center;
-    margin-bottom: 25px;
-  }
-
-  .product-image-container img {
-    max-width: 150px;
-    max-height: 150px;
-  }
-
-  .product-name {
-    margin-bottom: 10px;
-  }
-
-  .product-quantity {
-    margin-bottom: 15px;
-  }
-
-  .buy-again-button {
-    width: 100%;
-    margin-bottom: 15px;
+    width: 130px;
+    margin-bottom: var(--space-4);
   }
 
   .product-actions {
-    /* grid-column: auto; undos grid-column: 2; from above.
-       This element will now be placed in its normal column
-       in the grid. */
-    grid-column: auto;
-    margin-bottom: 70px;
+    grid-column: 1;
+    flex-direction: column;
+    margin-bottom: var(--space-6);
   }
 
-  .track-package-button {
-    width: 100%;
-    padding: 12px;
-  }
+  .buy-again-button,
+  .track-package-button { width: 100%; }
 }

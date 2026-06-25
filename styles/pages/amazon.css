@@ -1,156 +1,169 @@
+/**
+ * amazon.css — Product listing page (Step 3: full visual redesign)
+ */
+
+/* ─── Page layout ────────────────────────────────────────────────────────── */
+
 .main {
-  margin-top: 60px;
+  max-width: var(--max-width-content);
+  margin-inline: auto;
+  padding-inline: var(--space-5);
+  padding-top: calc(var(--header-height) + var(--space-6));
+  padding-bottom: var(--space-12);
 }
+
+/* ─── Section heading ────────────────────────────────────────────────────── */
+
+.products-section-title {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  margin-bottom: var(--space-5);
+  padding-bottom: var(--space-3);
+  border-bottom: 2px solid var(--color-border-light);
+}
+
+/* ─── Product grid ───────────────────────────────────────────────────────── */
 
 .products-grid {
   display: grid;
-
-  /* - In CSS Grid, 1fr means a column will take up the
-       remaining space in the grid.
-     - If we write 1fr 1fr ... 1fr; 8 times, this will
-       divide the grid into 8 columns, each taking up an
-       equal amount of the space.
-     - repeat(8, 1fr); is a shortcut for repeating "1fr"
-       8 times (instead of typing out "1fr" 8 times).
-       repeat(...) is a special property that works with
-       display: grid; */
-  grid-template-columns: repeat(8, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: var(--space-4);
 }
 
-/* @media is used to create responsive design (making the
-   website look good on any screen size). This @media
-   means when the screen width is 2000px or less, we
-   will divide the grid into 7 columns instead of 8. */
-@media (max-width: 2000px) {
-  .products-grid {
-    grid-template-columns: repeat(7, 1fr);
-  }
-}
-
-/* This @media means when the screen width is 1600px or
-   less, we will divide the grid into 6 columns. */
-@media (max-width: 1600px) {
-  .products-grid {
-    grid-template-columns: repeat(6, 1fr);
-  }
-}
-
-@media (max-width: 1300px) {
-  .products-grid {
-    grid-template-columns: repeat(5, 1fr);
-  }
-}
-
-@media (max-width: 1000px) {
-  .products-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-@media (max-width: 800px) {
-  .products-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media (max-width: 575px) {
-  .products-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 450px) {
-  .products-grid {
-    grid-template-columns: 1fr;
-  }
-}
+/* ─── Product card ───────────────────────────────────────────────────────── */
 
 .product-container {
-  padding-top: 40px;
-  padding-bottom: 25px;
-  padding-left: 25px;
-  padding-right: 25px;
-
-  border-right: 1px solid rgb(231, 231, 231);
-  border-bottom: 1px solid rgb(231, 231, 231);
-
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
   display: flex;
   flex-direction: column;
+
+  /* Card entrance animation (delay set inline by JS) */
+  animation: fadeInUp var(--transition-slow) both;
+
+  transition:
+    transform    var(--transition-base),
+    box-shadow   var(--transition-base),
+    border-color var(--transition-base);
 }
+
+.product-container:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card-hover);
+  border-color: var(--color-brand-search);
+}
+
+/* ─── Image ──────────────────────────────────────────────────────────────── */
 
 .product-image-container {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  height: 170px;
+  margin-bottom: var(--space-3);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background-color: var(--color-bg-muted);
+  transition: background-color var(--transition-fast);
+}
 
-  height: 180px;
-  margin-bottom: 20px;
+.product-container:hover .product-image-container {
+  background-color: #e4e8e8;
 }
 
 .product-image {
-  /* Images will overflow their container by default. To
-    prevent this, we set max-width and max-height to 100%
-    so they stay inside their container. */
+  max-height: 140px;
   max-width: 100%;
-  max-height: 100%;
+  object-fit: contain;
+  transition: transform var(--transition-slow);
 }
 
-.product-name {
-  height: 40px;
-  margin-bottom: 5px;
+.product-container:hover .product-image {
+  transform: scale(1.04);
 }
+
+/* ─── Name ───────────────────────────────────────────────────────────────── */
+
+.product-name {
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-tight);
+  color: var(--color-text-link);
+  margin-bottom: var(--space-2);
+  transition: color var(--transition-fast);
+}
+
+.product-container:hover .product-name {
+  color: var(--color-text-link-hover);
+}
+
+/* ─── Rating ─────────────────────────────────────────────────────────────── */
 
 .product-rating-container {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
 }
 
-.product-rating-stars {
-  width: 100px;
-  margin-right: 6px;
-}
+.product-rating-stars { height: 17px; }
 
 .product-rating-count {
-  color: rgb(1, 124, 182);
-  cursor: pointer;
-  margin-top: 3px;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-link);
 }
+
+/* ─── Price ──────────────────────────────────────────────────────────────── */
 
 .product-price {
+  font-size: var(--font-size-lg);
   font-weight: 700;
-  margin-bottom: 10px;
+  color: var(--color-text-price);
+  margin-bottom: var(--space-3);
+  letter-spacing: -0.3px;
 }
+
+/* ─── Quantity ───────────────────────────────────────────────────────────── */
 
 .product-quantity-container {
-  margin-bottom: 17px;
+  margin-bottom: var(--space-3);
 }
 
-.product-spacer {
-  flex: 1;
-}
+/* Push "Added" + button to bottom of every card */
+.product-spacer { flex: 1; }
+
+/* ─── "Added to cart" toast ──────────────────────────────────────────────── */
 
 .added-to-cart {
-  color: rgb(6, 125, 98);
-  font-size: 16px;
-
   display: flex;
   align-items: center;
-  margin-bottom: 8px;
-
-  /* At first, the "Added to cart" message will
-     be invisible. Use JavaScript to change the
-     opacity and make it visible. */
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text-success);
+  margin-bottom: var(--space-2);
+  height: 20px;
+  /* Both opacity and lift animate together */
   opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity   var(--transition-base),
+    transform var(--transition-base);
 }
 
 .added-to-cart img {
-  height: 20px;
-  margin-right: 5px;
+  width: 14px;
+  height: 14px;
 }
+
+/* ─── Add-to-cart button ─────────────────────────────────────────────────── */
 
 .add-to-cart-button {
   width: 100%;
-  padding: 8px;
-  border-radius: 50px;
+  padding-block: 9px;
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-md);
+  font-weight: 500;
+  letter-spacing: 0.1px;
 }

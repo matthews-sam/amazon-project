@@ -1,72 +1,171 @@
+/**
+ * general.css — Base styles & global utilities (Step 3: visual upgrade)
+ */
+
+/* ─── Reset ──────────────────────────────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  font-family: Roboto, Arial;
-  color: rgb(33, 33, 33);
-  /* The <body> element has a default margin of 8px
-     on all sides. This removes the default margins. */
+  font-family: Roboto, Arial, sans-serif;
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--color-text);
+  /* Subtle gray page canvas makes white cards pop visually */
+  background-color: var(--color-bg-page);
   margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* <p> elements have a default margin on the top
-   and bottom. This removes the default margins. */
-p {
-  margin: 0;
+p { margin: 0; }
+img { display: block; max-width: 100%; }
+button { cursor: pointer; font-family: inherit; }
+input, select { font-family: inherit; }
+
+/* ─── Skip link ──────────────────────────────────────────────────────────── */
+
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: var(--space-4);
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--color-brand-yellow);
+  color: var(--color-text);
+  font-weight: 700;
+  font-size: var(--font-size-base);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  z-index: 9999;
+  box-shadow: var(--shadow-md);
+  transition: top var(--transition-fast);
 }
 
-button {
-  cursor: pointer;
+.skip-link:focus { top: var(--space-2); }
+
+/* ─── Focus ──────────────────────────────────────────────────────────────── */
+
+:focus-visible {
+  outline: 2px solid var(--color-brand-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
 }
 
-select {
-  cursor: pointer;
+input:focus,
+select:focus {
+  outline: 2px solid var(--color-brand-focus);
+  outline-offset: 0;
 }
 
-input, select, button {
-  font-family: Roboto, Arial;
-}
+/* ─── Buttons ────────────────────────────────────────────────────────────── */
 
 .button-primary {
-  color: rgb(33, 33, 33);
-  background-color: rgb(255, 216, 20);
-  border: 1px solid rgb(252, 210, 0);
-  border-radius: 8px;
-  cursor: pointer;
-  box-shadow: 0 2px 5px rgba(213, 217, 217, 0.5);
+  color: var(--color-text);
+  background: var(--gradient-btn-primary);
+  border: 1px solid #C7A600;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-normal, 400);
+  box-shadow: var(--shadow-btn);
+  transition:
+    background   var(--transition-fast),
+    box-shadow   var(--transition-fast),
+    transform    var(--transition-fast);
 }
 
 .button-primary:hover {
-  background-color: rgb(247, 202, 0);
-  border: 1px solid rgb(242, 194, 0);
+  background: var(--gradient-btn-hover);
+  box-shadow: var(--shadow-sm);
 }
 
 .button-primary:active {
-  background: rgb(255, 216, 20);
-  border-color: rgb(252, 210, 0);
+  background: linear-gradient(to bottom, #F7CA00, #DDB100);
+  transform: translateY(1px);
   box-shadow: none;
+}
+
+.button-primary:focus-visible {
+  box-shadow: var(--shadow-btn-focus);
+  outline: none;
 }
 
 .button-secondary {
-  color: rgb(33, 33, 33);
-  background: white;
-  border: 1px solid rgb(213, 217, 217);
-  border-radius: 8px;
-  cursor: pointer;
-  box-shadow: 0 2px 5px rgba(213, 217, 217, 0.5);
+  color: var(--color-text);
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-md);
+  box-shadow: var(--shadow-btn);
+  transition:
+    background-color var(--transition-fast),
+    border-color     var(--transition-fast),
+    box-shadow       var(--transition-fast);
 }
 
 .button-secondary:hover {
-  background-color: rgb(247, 250, 250);
+  background-color: var(--color-bg-hover);
+  border-color: #AAB0B0;
+  box-shadow: var(--shadow-sm);
 }
 
 .button-secondary:active {
-  background-color: rgb(237, 253, 255);
+  background-color: var(--color-bg-active);
   box-shadow: none;
 }
 
-/* These styles will limit text to 2 lines. Anything
-   beyond 2 lines will be replaced with "..."
-   You can find this code by using an A.I. tool or by
-   searching in Google.
-   https://css-tricks.com/almanac/properties/l/line-clamp/ */
+/* Respect user's reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ─── Links ──────────────────────────────────────────────────────────────── */
+
+.link-primary {
+  color: var(--color-text-link);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+  text-decoration: none;
+}
+
+.link-primary:hover {
+  color: var(--color-text-link-hover);
+  text-decoration: underline;
+}
+
+/* ─── Form elements ──────────────────────────────────────────────────────── */
+
+select {
+  color: var(--color-text);
+  background-color: var(--color-bg-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 4px 8px;
+  font-size: var(--font-size-md);
+  cursor: pointer;
+  box-shadow: var(--shadow-xs);
+  transition:
+    border-color     var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+select:hover {
+  border-color: var(--color-border-input);
+  background-color: #e8e8e8;
+}
+
+/* ─── Typography ─────────────────────────────────────────────────────────── */
+
 .limit-text-to-2-lines {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -74,28 +173,40 @@ input, select, button {
   overflow: hidden;
 }
 
-.link-primary {
-  color: rgb(1, 124, 182);
-  cursor: pointer;
+/* ─── Empty / error states ───────────────────────────────────────────────── */
+
+.no-results {
+  grid-column: 1 / -1;
+  padding: var(--space-12) var(--space-6);
+  text-align: center;
+  color: var(--color-text-muted);
 }
 
-.link-primary:hover {
-  color: rgb(196, 80, 0);
+.no-results p {
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--space-2);
 }
 
-/* Styles for dropdown selectors. */
-select {
-  color: rgb(33, 33, 33);
-  background-color: rgb(240, 240, 240);
-  border: 1px solid rgb(213, 217, 217);
-  border-radius: 8px;
-  padding: 3px 5px;
-  font-size: 15px;
-  cursor: pointer;
-  box-shadow: 0 2px 5px rgba(213, 217, 217, 0.5);
+.no-results small {
+  font-size: var(--font-size-base);
+  color: var(--color-text-light);
 }
 
-select:focus,
-input:focus {
-  outline: 2px solid rgb(255, 153, 0);
+/* ─── Page-load animation ────────────────────────────────────────────────── */
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Footer ─────────────────────────────────────────────────────────────── */
+
+.site-footer {
+  padding: var(--space-8) var(--space-4);
+  text-align: center;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  background-color: var(--color-brand-dark-2, #232F3E);
+  color: var(--color-text-on-dark-dim);
+  margin-top: var(--space-12);
 }
