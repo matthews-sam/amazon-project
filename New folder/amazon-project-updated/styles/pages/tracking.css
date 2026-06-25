@@ -1,0 +1,159 @@
+/**
+ * tracking.css — Step 3: redesigned order tracking page
+ */
+
+/* ─── Page ───────────────────────────────────────────────────────────────── */
+
+.main {
+  max-width: var(--max-width-narrow);
+  padding-inline: var(--space-8);
+  padding-top: calc(var(--header-height) + var(--space-8));
+  padding-bottom: var(--space-12);
+  margin-inline: auto;
+}
+
+/* ─── Tracking card ──────────────────────────────────────────────────────── */
+
+.order-tracking {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-sm);
+  animation: fadeInUp var(--transition-slow) both;
+}
+
+/* ─── Back link ──────────────────────────────────────────────────────────── */
+
+.back-to-orders-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-bottom: var(--space-6);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-link);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.back-to-orders-link:hover { color: var(--color-text-link-hover); text-decoration: underline; }
+
+/* ─── Delivery heading ───────────────────────────────────────────────────── */
+
+.delivery-date {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
+  line-height: var(--line-height-tight);
+}
+
+/* ─── Product info ───────────────────────────────────────────────────────── */
+
+.product-info {
+  font-size: var(--font-size-md);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-1);
+}
+
+.product-image {
+  max-width: 130px;
+  max-height: 130px;
+  object-fit: contain;
+  margin-top: var(--space-6);
+  margin-bottom: var(--space-8);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-bg-muted);
+  padding: var(--space-3);
+}
+
+/* ─── Progress step indicators ───────────────────────────────────────────── */
+
+.progress-labels-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-bottom: var(--space-3);
+  position: relative;
+}
+
+.progress-label {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Step circles above the bar */
+.progress-label::before {
+  content: '';
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: var(--color-border);
+  border: 2px solid var(--color-border);
+  transition: all var(--transition-base);
+  order: -1;
+}
+
+.progress-label.completed::before {
+  background-color: var(--color-text-delivery);
+  border-color: var(--color-text-delivery);
+}
+
+.progress-label.current-status {
+  color: var(--color-text-delivery);
+  font-weight: 700;
+}
+
+.progress-label.current-status::before {
+  background-color: var(--color-brand-orange);
+  border-color: var(--color-brand-orange);
+  box-shadow: 0 0 0 4px rgba(255, 153, 0, 0.2);
+  transform: scale(1.2);
+}
+
+/* Align first and last labels to card edges */
+.progress-label:first-child { align-items: flex-start; }
+.progress-label:last-child  { align-items: flex-end; }
+
+/* ─── Progress bar ───────────────────────────────────────────────────────── */
+
+.progress-bar-container {
+  height: 8px;
+  width: 100%;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-border-light);
+  overflow: hidden;
+  margin-bottom: var(--space-8);
+  border: none;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 50%;
+  border-radius: var(--radius-pill);
+  background: var(--gradient-progress);
+  background-size: 200% 100%;
+
+  /* Shimmer: draws eye to active state */
+  animation: progressShimmer 2.5s linear infinite;
+  /* Entry animation */
+  transform-origin: left;
+}
+
+@keyframes progressShimmer {
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────────── */
+
+@media (max-width: 575px) {
+  .main { padding-inline: var(--space-4); }
+  .order-tracking { padding: var(--space-5); }
+  .delivery-date { font-size: var(--font-size-xl); }
+  .progress-label { font-size: var(--font-size-xs); }
+}

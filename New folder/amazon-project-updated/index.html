@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Shop millions of products — electronics, clothing, kitchen, and more with fast delivery.">
+    <title>Amazon — Shop Online</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- variables.css must load first — all other sheets depend on it -->
+    <link rel="stylesheet" href="styles/shared/variables.css">
+    <link rel="stylesheet" href="styles/shared/general.css">
+    <link rel="stylesheet" href="styles/shared/amazon-header.css">
+    <link rel="stylesheet" href="styles/pages/amazon.css">
+  </head>
+  <body>
+
+    <!-- Skip link: lets keyboard / screen-reader users bypass the header -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- ── Site header ─────────────────────────────────────────────────── -->
+    <header class="amazon-header">
+
+      <!-- Logo -->
+      <div class="amazon-header-left-section">
+        <a href="index.html" class="header-link" aria-label="Amazon — go to homepage">
+          <img class="amazon-logo"
+            src="images/amazon-logo-white.png"
+            alt="Amazon">
+          <img class="amazon-mobile-logo"
+            src="images/amazon-mobile-logo-white.png"
+            alt="Amazon">
+        </a>
+      </div>
+
+      <!-- Search — wrapped in <form role="search"> for correct semantics.
+           Pressing Enter or clicking the button both fire the submit event,
+           which amazon.js intercepts and handles client-side. -->
+      <div class="amazon-header-middle-section">
+        <form class="search-form" role="search" aria-label="Search products">
+          <input
+            class="search-bar"
+            type="search"
+            placeholder="Search Amazon"
+            aria-label="Search for products"
+            autocomplete="off">
+          <button class="search-button" type="submit" aria-label="Submit search">
+            <img class="search-icon" src="images/icons/search-icon.png" alt="">
+          </button>
+        </form>
+      </div>
+
+      <!-- Navigation — orders + cart -->
+      <nav class="amazon-header-right-section" aria-label="Account and cart">
+        <a class="orders-link header-link" href="orders.html"
+          aria-label="Returns and Orders">
+          <span class="returns-text">Returns</span>
+          <span class="orders-text">&amp; Orders</span>
+        </a>
+
+        <a class="cart-link header-link" href="checkout.html"
+          aria-label="Shopping cart">
+          <img class="cart-icon" src="images/icons/cart-icon.png" alt="">
+          <!-- aria-live="polite" announces quantity changes to screen readers -->
+          <span class="cart-quantity js-cart-quantity"
+            aria-live="polite"
+            aria-label="items in cart"></span>
+          <span class="cart-text">Cart</span>
+        </a>
+      </nav>
+
+    </header><!-- /header -->
+
+    <!-- ── Main content ────────────────────────────────────────────────── -->
+    <main class="main" id="main-content">
+      <!-- Product cards are injected here by amazon.js -->
+      <div class="products-grid js-products-grid" aria-label="Product listings"></div>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; 2025, Amazon.com, Inc. or its affiliates. All rights reserved.</p>
+    </footer>
+
+    <script type="module" src="scripts/amazon.js"></script>
+  </body>
+</html>
