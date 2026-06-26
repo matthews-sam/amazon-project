@@ -200,3 +200,62 @@
   .returns-text { display: none; }
   .orders-text  { font-size: var(--font-size-sm); }
 }
+
+/* ─── Mobile fix: screens ≤ 480 px ──────────────────────────────────────── */
+/*
+ * At this width the header becomes cramped. We:
+ *  • Reduce padding so the search bar gets more room
+ *  • Shrink the cart icon from 48 px → 36 px
+ *  • Hide "Cart" text — the icon + badge is enough on small screens
+ *  • Re-anchor the badge to match the smaller icon dimensions
+ *  • Shrink the search input height slightly for a tighter header
+ */
+
+@media (max-width: 480px) {
+  .amazon-header {
+    padding-inline: var(--space-2);
+    gap: var(--space-1);
+  }
+
+  .amazon-header-middle-section {
+    margin-inline: var(--space-1);
+  }
+
+  /* Smaller cart icon so it doesn't crowd the search bar */
+  .cart-icon {
+    width: 36px;
+  }
+
+  /* Hide "Cart" text label — icon + badge conveys the same meaning */
+  .cart-text {
+    display: none;
+  }
+
+  /* Re-position badge to sit correctly over the smaller icon */
+  .cart-quantity {
+    left:       14px;
+    top:         2px;
+    min-width:  18px;
+    height:     18px;
+    font-size:  10px;
+    padding-inline: 2px;
+  }
+
+  /* Compact search bar */
+  .search-bar,
+  .search-button {
+    height: 36px;
+  }
+
+  .search-bar {
+    font-size: 14px;
+  }
+
+  .search-button {
+    width: 38px;
+  }
+
+  .search-icon {
+    height: 18px;
+  }
+}

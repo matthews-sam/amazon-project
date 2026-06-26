@@ -6,6 +6,7 @@ import { cart } from '../../data/cart.js';
 import { getProduct } from '../../data/products.js';
 import { getDeliveryOption } from '../../data/deliveryOptions.js';
 import { formatCurrency } from '../utils/money.js';
+import { createParticles } from '../utils/particles.js';
 
 export function renderPaymentSummary() {
   let productPriceCents = 0;
@@ -77,5 +78,13 @@ export function renderPaymentSummary() {
   const paymentSummaryEl = document.querySelector('.js-payment-summary');
   if (paymentSummaryEl) {
     paymentSummaryEl.innerHTML = paymentSummaryHTML;
+
+    // Attach particle burst to Place Order button
+    const placeOrderBtn = paymentSummaryEl.querySelector('.place-order-button');
+    if (placeOrderBtn) {
+      placeOrderBtn.addEventListener('click', () => {
+        createParticles(placeOrderBtn);
+      });
+    }
   }
 }

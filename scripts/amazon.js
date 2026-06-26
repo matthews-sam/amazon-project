@@ -1,10 +1,11 @@
 /**
- * amazon.js — Main product page logic (Step 3: UI enhancements)
+ * amazon.js — Main product page logic
  */
 
 import { addToCart, getCartQuantity } from '../data/cart.js';
 import { products } from '../data/products.js';
 import { formatCurrency } from './utils/money.js';
+import { createParticles } from './utils/particles.js';
 
 // ─── Rendering ───────────────────────────────────────────────────────────────
 
@@ -21,11 +22,6 @@ function renderProducts(productList) {
     return;
   }
 
-  /**
-   * Step 3: Each <article> receives an inline animation-delay based on its
-   * index, creating a staggered entrance effect without JavaScript scroll
-   * observers. Capped at 10 items (300ms total) so late items don't lag.
-   */
   const productsHTML = productList.map((product, index) => {
     const delay = Math.min(index, 10) * 35;
     return `
@@ -101,17 +97,15 @@ function attachCartListeners() {
       addToCart(productId, quantity);
       updateCartQuantity();
       showAddedMessage(productId);
+
+      // Particle burst — mirrors the ParticleButton reference animation
+      createParticles(button);
     });
   });
 }
 
 const addedMessageTimers = {};
 
-/**
- * Step 3: Animates both opacity AND a Y-axis lift so the confirmation
- * message visually "rises" into view, then fades back out.
- * The CSS transition handles the easing — JS just sets the end values.
- */
 function showAddedMessage(productId) {
   const messageEl = document.querySelector(`.js-added-to-cart-${productId}`);
   if (!messageEl) return;
@@ -133,7 +127,7 @@ function updateCartQuantity() {
 
   el.textContent = qty;
 
-  // Micro-interaction: brief scale-up when count changes
+  // Badge pulse micro-interaction
   el.style.transform = 'scale(1.35)';
   setTimeout(() => { el.style.transform = 'scale(1)'; }, 250);
 }
