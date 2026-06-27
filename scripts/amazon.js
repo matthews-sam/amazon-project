@@ -3,9 +3,10 @@
  */
 
 import { addToCart, getCartQuantity } from '../data/cart.js';
-import { products } from '../data/products.js';
-import { formatCurrency } from './utils/money.js';
-import { createParticles } from './utils/particles.js';
+import { products }                   from '../data/products.js';
+import { formatCurrency }             from './utils/money.js';
+import { createParticles }            from './utils/particles.js';
+import { initHamburger, updateMobileCartQty } from './utils/header.js';
 
 // ─── Rendering ───────────────────────────────────────────────────────────────
 
@@ -27,15 +28,9 @@ function renderProducts(productList) {
     return `
       <article class="product-container" style="animation-delay:${delay}ms">
         <div class="product-image-container">
-          <img class="product-image"
-            src="${product.image}"
-            alt="${product.name}">
+          <img class="product-image" src="${product.image}" alt="${product.name}">
         </div>
-
-        <div class="product-name limit-text-to-2-lines">
-          ${product.name}
-        </div>
-
+        <div class="product-name limit-text-to-2-lines">${product.name}</div>
         <div class="product-rating-container">
           <img class="product-rating-stars"
             src="images/ratings/rating-${product.rating.stars * 10}.png"
@@ -44,32 +39,22 @@ function renderProducts(productList) {
             ${product.rating.count.toLocaleString()}
           </div>
         </div>
-
-        <div class="product-price">
-          $${formatCurrency(product.priceCents)}
-        </div>
-
+        <div class="product-price">$${formatCurrency(product.priceCents)}</div>
         <div class="product-quantity-container">
-          <select
-            class="js-quantity-selector-${product.id}"
+          <select class="js-quantity-selector-${product.id}"
             aria-label="Quantity for ${product.name}">
             ${Array.from({ length: 10 }, (_, i) => i + 1)
               .map(n => `<option value="${n}">${n}</option>`)
               .join('')}
           </select>
         </div>
-
         <div class="product-spacer"></div>
-
         <div class="added-to-cart js-added-to-cart-${product.id}"
           aria-live="polite" role="status">
           <img src="images/icons/checkmark.png" alt=""> Added
         </div>
-
-        <button
-          class="add-to-cart-button button-primary js-add-to-cart"
-          data-product-id="${product.id}"
-          type="button">
+        <button class="add-to-cart-button button-primary js-add-to-cart"
+          data-product-id="${product.id}" type="button">
           Add to Cart
         </button>
       </article>
@@ -86,19 +71,12 @@ function attachCartListeners() {
   document.querySelectorAll('.js-add-to-cart').forEach(button => {
     button.addEventListener('click', () => {
       const { productId } = button.dataset;
+      const qs  = document.querySelector(`.js-quantity-selector-${productId}`);
+      const qty = qs ? parseInt(qs.value, 10) : 1;
 
-      const quantitySelector = document.querySelector(
-        `.js-quantity-selector-${productId}`
-      );
-      const quantity = quantitySelector
-        ? parseInt(quantitySelector.value, 10)
-        : 1;
-
-      addToCart(productId, quantity);
+      addToCart(productId, qty);
       updateCartQuantity();
       showAddedMessage(productId);
-
-      // Particle burst — mirrors the ParticleButton reference animation
       createParticles(button);
     });
   });
@@ -107,47 +85,40 @@ function attachCartListeners() {
 const addedMessageTimers = {};
 
 function showAddedMessage(productId) {
-  const messageEl = document.querySelector(`.js-added-to-cart-${productId}`);
-  if (!messageEl) return;
-
-  messageEl.style.opacity   = '1';
-  messageEl.style.transform = 'translateY(0)';
-
+  const el = document.querySelector(`.js-added-to-cart-${productId}`);
+  if (!el) return;
+  el.style.opacity   = '1';
+  el.style.transform = 'translateY(0)';
   clearTimeout(addedMessageTimers[productId]);
   addedMessageTimers[productId] = setTimeout(() => {
-    messageEl.style.opacity   = '0';
-    messageEl.style.transform = 'translateY(4px)';
+    el.style.opacity   = '0';
+    el.style.transform = 'translateY(4px)';
   }, 2000);
 }
 
 function updateCartQuantity() {
   const qty = getCartQuantity();
   const el  = document.querySelector('.js-cart-quantity');
-  if (!el) return;
-
-  el.textContent = qty;
-
-  // Badge pulse micro-interaction
-  el.style.transform = 'scale(1.35)';
-  setTimeout(() => { el.style.transform = 'scale(1)'; }, 250);
+  if (el) {
+    el.textContent     = qty;
+    el.style.transform = 'scale(1.35)';
+    setTimeout(() => { el.style.transform = 'scale(1)'; }, 250);
+  }
+  // Keep the mobile dropdown badge in sync
+  updateMobileCartQty(qty);
 }
 
 // ─── Search ───────────────────────────────────────────────────────────────────
 
 function handleSearch() {
   const searchBar = document.querySelector('.search-bar');
-  const query = searchBar ? searchBar.value.trim().toLowerCase() : '';
+  const query     = searchBar ? searchBar.value.trim().toLowerCase() : '';
+  if (!query) { renderProducts(products); return; }
 
-  if (!query) {
-    renderProducts(products);
-    return;
-  }
-
-  const filtered = products.filter(product =>
-    product.name.toLowerCase().includes(query) ||
-    (product.keywords ?? []).some(kw => kw.toLowerCase().includes(query))
+  const filtered = products.filter(p =>
+    p.name.toLowerCase().includes(query) ||
+    (p.keywords ?? []).some(kw => kw.toLowerCase().includes(query))
   );
-
   renderProducts(filtered);
 }
 
@@ -155,17 +126,14 @@ function handleSearch() {
 
 renderProducts(products);
 updateCartQuantity();
+initHamburger();           // wire up the hamburger toggle
 
 const searchForm = document.querySelector('.search-form');
 const searchBar  = document.querySelector('.search-bar');
 
 if (searchForm) {
-  searchForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    handleSearch();
-  });
+  searchForm.addEventListener('submit', (e) => { e.preventDefault(); handleSearch(); });
 }
-
 if (searchBar) {
   searchBar.addEventListener('input', () => {
     if (searchBar.value.trim() === '') renderProducts(products);

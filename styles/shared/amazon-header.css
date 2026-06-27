@@ -1,8 +1,11 @@
 /**
- * amazon-header.css — Step 3: redesigned header
+ * amazon-header.css — Site-wide header + mobile hamburger nav
+ *
+ * Hamburger animation is a CSS-only port of the React SVG component
+ * in menu.txt. JS only toggles the `.open` class on the svg and nav.
  */
 
-/* ─── Shell ──────────────────────────────────────────────────────────────── */
+/* ─── Header shell ───────────────────────────────────────────────────────── */
 
 .amazon-header {
   background: var(--gradient-header);
@@ -19,8 +22,6 @@
   inset-inline: 0;
   height: var(--header-height);
   z-index: 100;
-
-  /* Subtle bottom separator */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
 }
 
@@ -39,15 +40,13 @@
   text-decoration: none;
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
-  transition: border-color var(--transition-fast);
   white-space: nowrap;
+  transition: border-color var(--transition-fast);
 }
 
-.header-link:hover {
-  border-color: var(--color-text-on-dark);
-}
+.header-link:hover { border-color: var(--color-text-on-dark); }
 
-.amazon-logo { width: 100px; margin-top: 5px; }
+.amazon-logo        { width: 100px; margin-top: 5px; }
 .amazon-mobile-logo { display: none; }
 
 /* ─── Middle — search ────────────────────────────────────────────────────── */
@@ -79,15 +78,13 @@
   height: 42px;
   padding-inline: var(--space-4);
   border: none;
-  border-radius: 0;
   background-color: var(--color-bg-input);
   color: var(--color-text);
-  transition: background-color var(--transition-fast);
+  font-family: inherit;
 }
 
-/* Remove browser default search-input decorations */
 .search-bar::-webkit-search-cancel-button { cursor: pointer; }
-.search-bar:focus { outline: none; background-color: #fff; }
+.search-bar:focus { outline: none; }
 
 .search-button {
   background-color: var(--color-brand-search);
@@ -102,13 +99,12 @@
   transition: background-color var(--transition-fast);
 }
 
-.search-button:hover { background-color: var(--color-brand-search-hover); }
+.search-button:hover  { background-color: var(--color-brand-search-hover); }
 .search-button:active { background-color: var(--color-brand-orange); }
-.search-button:focus { outline: none; }
+.search-button:focus  { outline: none; }
+.search-icon          { height: 22px; }
 
-.search-icon { height: 22px; }
-
-/* ─── Right — nav ────────────────────────────────────────────────────────── */
+/* ─── Right — desktop nav (Returns + Cart) ───────────────────────────────── */
 
 .amazon-header-right-section {
   width: 190px;
@@ -142,8 +138,6 @@
   font-weight: 700;
 }
 
-/* ─── Cart ───────────────────────────────────────────────────────────────── */
-
 .cart-link {
   position: relative;
   align-items: flex-end;
@@ -168,13 +162,10 @@
   align-items: center;
   justify-content: center;
   padding-inline: 3px;
-  /* Smooth bump animation when quantity changes */
   transition: transform var(--transition-bounce);
 }
 
-.cart-quantity:empty {
-  display: none;   /* hide until JS populates it */
-}
+.cart-quantity:empty { display: none; }
 
 .cart-text {
   margin-top: 10px;
@@ -182,80 +173,167 @@
   font-weight: 700;
 }
 
-/* ─── Responsive ─────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════════
+   HAMBURGER BUTTON
+   Translates the React <MenuToggle> SVG animation from menu.txt into
+   CSS-only transitions — JS just toggles .open on the <svg> element.
+   ═══════════════════════════════════════════════════════════════════════════ */
 
+.hamburger-btn {
+  display: none;           /* hidden on desktop; shown via mobile breakpoint */
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-on-dark);
+  padding: var(--space-2);
+  cursor: pointer;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  transition: border-color var(--transition-fast);
+}
+
+.hamburger-btn:hover { border-color: var(--color-text-on-dark); }
+
+/* SVG wrapper — rotates -45deg when open, matching reference's -rotate-45 */
+.hamburger-svg {
+  width: 26px;
+  height: 26px;
+  /* Reference uses duration-600 ease-out */
+  transition: transform 600ms ease-out;
+}
+
+.hamburger-svg.open {
+  transform: rotate(-45deg);
+}
+
+/*
+ * Morphing path: the complex S-curve (top line → curve → bottom line).
+ * Closed → shows only the straight top segment (dasharray 12 of ~63 total).
+ * Open   → shifts to expose the curved X section (dasharray 20 of 300,
+ *           offset -32.42px).  Exact values from menu.txt.
+ */
+.hamburger-path-morph {
+  transition:
+    stroke-dasharray  600ms ease-out,
+    stroke-dashoffset 600ms ease-out;
+  stroke-dasharray: 12 63;
+}
+
+.hamburger-svg.open .hamburger-path-morph {
+  stroke-dasharray:  20 300;
+  stroke-dashoffset: -32.42px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOBILE NAV DROPDOWN
+   Slides in below the fixed header when the hamburger is open.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.mobile-nav {
+  position: fixed;
+  top: var(--header-height);
+  inset-inline: 0;
+  background: var(--color-brand-dark-2, #232F3E);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: var(--shadow-md);
+  z-index: 99;
+
+  /* Collapsed */
+  max-height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  transition:
+    max-height  300ms ease-out,
+    visibility  300ms ease-out;
+}
+
+.mobile-nav.open {
+  max-height: 200px;
+  visibility: visible;
+}
+
+.mobile-nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-6);
+  color: var(--color-text-on-dark);
+  text-decoration: none;
+  font-size: var(--font-size-md);
+  font-weight: 500;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background-color var(--transition-fast);
+}
+
+.mobile-nav-link:hover,
+.mobile-nav-link:focus {
+  background-color: rgba(255, 255, 255, 0.1);
+  outline: none;
+}
+
+.mobile-nav-link:last-child { border-bottom: none; }
+
+/* Cart quantity badge inside the dropdown */
+.mobile-cart-badge {
+  background-color: var(--color-brand-orange);
+  color: #ffffff;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+  padding: 2px var(--space-2);
+  min-width: 22px;
+  text-align: center;
+  display: none;   /* hidden until updateMobileCartQty() gives it content */
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE BREAKPOINTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── ≤ 800px : fluid widths ─────────────────────────────────────────────── */
 @media (max-width: 800px) {
   .amazon-header-left-section,
   .amazon-header-right-section { width: auto; }
   .amazon-header-middle-section { margin-inline: var(--space-2); }
 }
 
-@media (max-width: 575px) {
-  .amazon-logo { display: none; }
-  .amazon-mobile-logo {
-    display: block;
-    height: 35px;
-    margin-top: 5px;
-  }
-  .returns-text { display: none; }
-  .orders-text  { font-size: var(--font-size-sm); }
+/* ── ≤ 640px : switch to hamburger ──────────────────────────────────────── */
+@media (max-width: 640px) {
+  /* Hide the desktop right-nav; its links move into the dropdown */
+  .amazon-header-right-section { display: none; }
+
+  /* Show the hamburger button */
+  .hamburger-btn { display: flex; }
 }
 
-/* ─── Mobile fix: screens ≤ 480 px ──────────────────────────────────────── */
-/*
- * At this width the header becomes cramped. We:
- *  • Reduce padding so the search bar gets more room
- *  • Shrink the cart icon from 48 px → 36 px
- *  • Hide "Cart" text — the icon + badge is enough on small screens
- *  • Re-anchor the badge to match the smaller icon dimensions
- *  • Shrink the search input height slightly for a tighter header
- */
-
+/* ── ≤ 480px : compact header for small phones ──────────────────────────── */
 @media (max-width: 480px) {
   .amazon-header {
     padding-inline: var(--space-2);
     gap: var(--space-1);
   }
 
+  .amazon-header-left-section { width: auto; }
+
   .amazon-header-middle-section {
     margin-inline: var(--space-1);
   }
 
-  /* Smaller cart icon so it doesn't crowd the search bar */
-  .cart-icon {
-    width: 36px;
-  }
-
-  /* Hide "Cart" text label — icon + badge conveys the same meaning */
-  .cart-text {
-    display: none;
-  }
-
-  /* Re-position badge to sit correctly over the smaller icon */
-  .cart-quantity {
-    left:       14px;
-    top:         2px;
-    min-width:  18px;
-    height:     18px;
-    font-size:  10px;
-    padding-inline: 2px;
-  }
-
-  /* Compact search bar */
   .search-bar,
-  .search-button {
-    height: 36px;
-  }
+  .search-button { height: 36px; }
 
-  .search-bar {
-    font-size: 14px;
-  }
+  .search-bar    { font-size: 14px; }
+  .search-button { width: 38px; }
+  .search-icon   { height: 18px; }
+}
 
-  .search-button {
-    width: 38px;
-  }
-
-  .search-icon {
-    height: 18px;
+/* ── ≤ 400px : swap full logo for mobile logo ────────────────────────────── */
+@media (max-width: 400px) {
+  .amazon-logo { display: none; }
+  .amazon-mobile-logo {
+    display: block;
+    height: 35px;
+    margin-top: 5px;
   }
 }

@@ -2,31 +2,31 @@
  * paymentSummary.js — Checkout payment summary renderer
  */
 
-import { cart } from '../../data/cart.js';
-import { getProduct } from '../../data/products.js';
+import { cart, clearCart } from '../../data/cart.js';
+import { getProduct }       from '../../data/products.js';
 import { getDeliveryOption } from '../../data/deliveryOptions.js';
-import { formatCurrency } from '../utils/money.js';
-import { createParticles } from '../utils/particles.js';
+import { formatCurrency }   from '../utils/money.js';
+import { createParticles }  from '../utils/particles.js';
 
 export function renderPaymentSummary() {
-  let productPriceCents = 0;
+  let productPriceCents  = 0;
   let shippingPriceCents = 0;
-  let totalItems = 0;
+  let totalItems         = 0;
 
   cart.forEach(cartItem => {
     const product = getProduct(cartItem.productId);
-    if (!product) return; // Guard: skip orphaned cart items
+    if (!product) return;
 
-    productPriceCents += product.priceCents * cartItem.quantity;
-    totalItems += cartItem.quantity;
+    productPriceCents  += product.priceCents * cartItem.quantity;
+    totalItems         += cartItem.quantity;
 
     const deliveryOption = getDeliveryOption(cartItem.deliveryOptionId);
-    shippingPriceCents += deliveryOption.priceCents;
+    shippingPriceCents  += deliveryOption.priceCents;
   });
 
   const totalBeforeTaxCents = productPriceCents + shippingPriceCents;
-  const taxCents = totalBeforeTaxCents * 0.1; // 10% estimated tax
-  const totalCents = totalBeforeTaxCents + taxCents;
+  const taxCents            = totalBeforeTaxCents * 0.1;
+  const totalCents          = totalBeforeTaxCents + taxCents;
 
   const paymentSummaryHTML = `
     <div class="payment-summary-title">Order Summary</div>
@@ -56,35 +56,38 @@ export function renderPaymentSummary() {
       <div class="payment-summary-money">$${formatCurrency(totalCents)}</div>
     </div>
 
-    <button class="place-order-button button-primary">
+    <button class="place-order-button button-primary" type="button">
       Place your order
+    </button>
+
+    <button class="empty-cart-button js-empty-cart" type="button">
+      🗑 Empty Cart
     </button>
   `;
 
-  /**
-   * CRITICAL FIX #1: Original used `Document` (capital D) which is the
-   * WebAPI constructor interface, NOT the actual document object.
-   * Calling Document.querySelector() throws "Document.querySelector is
-   * not a function" and the payment summary NEVER renders.
-   * Fixed to lowercase `document`.
-   *
-   * CRITICAL FIX #2: Original selector was 'js-payment-summary' — missing
-   * the leading dot, so it was treated as a tag-name selector, which finds
-   * nothing. Fixed to '.js-payment-summary'.
-   *
-   * CRITICAL FIX #3: Item count was hardcoded as "Items (3)" regardless
-   * of what was actually in the cart. Now uses the computed totalItems.
-   */
   const paymentSummaryEl = document.querySelector('.js-payment-summary');
-  if (paymentSummaryEl) {
-    paymentSummaryEl.innerHTML = paymentSummaryHTML;
+  if (!paymentSummaryEl) return;
 
-    // Attach particle burst to Place Order button
-    const placeOrderBtn = paymentSummaryEl.querySelector('.place-order-button');
-    if (placeOrderBtn) {
-      placeOrderBtn.addEventListener('click', () => {
-        createParticles(placeOrderBtn);
-      });
-    }
+  paymentSummaryEl.innerHTML = paymentSummaryHTML;
+
+  /* ── Place Order — particle burst ────────────────────────────────── */
+  const placeOrderBtn = paymentSummaryEl.querySelector('.place-order-button');
+  if (placeOrderBtn) {
+    placeOrderBtn.addEventListener('click', () => createParticles(placeOrderBtn));
+  }
+
+  /* ── Empty Cart ───────────────────────────────────────────────────── */
+  const emptyCartBtn = paymentSummaryEl.querySelector('.js-empty-cart');
+  if (emptyCartBtn) {
+    emptyCartBtn.addEventListener('click', () => {
+      clearCart();
+      /**
+       * Dispatch a custom event instead of importing renderOrderSummary()
+       * directly — that would create a circular dependency since
+       * orderSummary.js already imports renderPaymentSummary().
+       * checkout.js listens for this event and re-renders both panels.
+       */
+      document.dispatchEvent(new CustomEvent('cart:cleared'));
+    });
   }
 }

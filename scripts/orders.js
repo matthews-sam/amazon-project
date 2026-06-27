@@ -1,22 +1,16 @@
 /**
  * orders.js — Orders page logic
- *
- * Responsibilities:
- *  1. Sync the cart quantity badge in the header with localStorage
- *  2. "Buy It Again" — adds the product back to the cart with 1 quantity
- *     and fires the same particle burst animation used on the product page
  */
 
-import { addToCart, getCartQuantity } from '../data/cart.js';
-import { createParticles } from './utils/particles.js';
-
-// ─── Cart header badge ────────────────────────────────────────────────────────
+import { addToCart, getCartQuantity }           from '../data/cart.js';
+import { createParticles }                      from './utils/particles.js';
+import { initHamburger, updateMobileCartQty }   from './utils/header.js';
 
 function updateCartQuantity() {
   const qty = getCartQuantity();
   const el  = document.querySelector('.cart-quantity');
-  if (!el) return;
-  el.textContent = qty;
+  if (el) el.textContent = qty;
+  updateMobileCartQty(qty);
 }
 
 // ─── Buy It Again ─────────────────────────────────────────────────────────────
@@ -26,23 +20,16 @@ document.querySelectorAll('.js-buy-again').forEach(button => {
     const { productId } = button.dataset;
     if (!productId) return;
 
-    // Add 1 of this product back to the cart
     addToCart(productId, 1);
     updateCartQuantity();
-
-    // Fire the particle burst (same animation as Add to Cart)
     createParticles(button);
 
-    // Visual confirmation: swap the label briefly to "✓ Added!"
-    const label = button.querySelector('.buy-again-label');
+    const label    = button.querySelector('.buy-again-label');
+    const original = label?.textContent ?? 'Buy it again';
     if (label) {
-      const original = label.textContent;
       label.textContent = '✓ Added!';
-      button.disabled = true;
-      setTimeout(() => {
-        label.textContent = original;
-        button.disabled   = false;
-      }, 1500);
+      button.disabled   = true;
+      setTimeout(() => { label.textContent = original; button.disabled = false; }, 1500);
     }
   });
 });
@@ -50,3 +37,4 @@ document.querySelectorAll('.js-buy-again').forEach(button => {
 // ─── Init ─────────────────────────────────────────────────────────────────────
 
 updateCartQuantity();
+initHamburger();

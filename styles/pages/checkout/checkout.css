@@ -231,3 +231,40 @@
   color: var(--color-text-muted);
   margin-top: var(--space-2);
 }
+
+/* ─── Empty Cart button ──────────────────────────────────────────────────── */
+
+.empty-cart-button {
+  width: 100%;
+  padding-block: var(--space-3);
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-md);
+  font-weight: 500;
+  margin-top: var(--space-2);
+  /* Dark red — clearly destructive, visually distinct from Place Order */
+  background-color: #7B1D1D;
+  color: #FFFFFF;
+  border: 1px solid #6B1212;
+  cursor: pointer;
+  letter-spacing: 0.2px;
+  transition:
+    background-color var(--transition-fast),
+    transform         var(--transition-fast),
+    box-shadow        var(--transition-fast);
+}
+
+.empty-cart-button:hover {
+  background-color: #991B1B;
+  box-shadow: 0 2px 8px rgba(123, 29, 29, 0.4);
+}
+
+.empty-cart-button:active {
+  background-color: #601414;
+  transform: scale(0.98);
+  box-shadow: none;
+}
+
+.empty-cart-button:focus-visible {
+  outline: 2px solid #F87171;
+  outline-offset: 2px;
+}
