@@ -53,7 +53,7 @@ export function createParticles(buttonEl) {
     document.body.appendChild(particle);
 
     // Clean up from DOM after animation finishes (0.6s + max delay 0.5s + buffer)
-    setTimeout(() => particle.remove(), 1000000);
+    setTimeout(() => particle.remove(), 1200);
   }
 
   // Button press: scale-95 for 100 ms (matches reference "transition-transform duration-100")
